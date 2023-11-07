@@ -1,31 +1,25 @@
-const http = require('http');
-let counter = 0;
+const express = require('express');
+let counterMain = 0;
+let counterAbout = 0;
 
-const server = http.createServer((req, res) => {
+const app = express();
 
-  if(req.url === '/') {
-    res.writeHead(200, {
-      'Content-Type': 'text/html; charset=UTF-8',
-    }),
-    res.write(`<h1>Welcome to main page</h1><p>Просмотров: <span data-counter-main>${counter++}</span></p><a href="/about.html">Ссылка на about</a>`);
-    res.end();
-  } else if(req.url === '/about.html') {
-    res.writeHead(200, {
-      'Content-Type': 'text/html; charset=UTF-8',
-    });
-    res.write('<h1>About</h1>');
-    res.write(`<p>Просмотров: <span data-counter-about>${counter++}</span></p>`);
-    res.write('<a href="/">Ссылка на главную</a>')
-  } else {
-    res.writeHead(404, {
-      'Content-Type': 'text/html; charset=UTF-8',
-    }),
-    res.write('<h1>Page not found</h1>');
-  }
+app.get('/', (req, res) => {
+  counterMain += 1;
+  res.send(`
+    <h1>Main page</h1>
+    <a href="/about">About</a>
+    <p>Просмотры страницы: ${counterMain}</p>
+  `);
 });
 
-const port = 5500;
+app.get('/about', (req, res) => {
+  counterAbout += 1;
+  res.send(`
+    <h1>Page About</h1>
+    <a href="/">Main</a>
+    <p>Просмотры страницы: ${counterAbout}</p>
+  `);
+});
 
-server.listen(port, () => {
-  console.log(`port: ${port}`)
-})
+app.listen(5500);
